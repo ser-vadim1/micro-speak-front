@@ -30,6 +30,7 @@ const Messages = ({ messages, ID_SinglChat, isOpenSliderChoosenFiles }) => {
   return (
     // ! Продумать варин с индексом в KEY - так как использовать индекс массива не желательно 
     <>
+    <h1>lol2</h1>
       <BoxOfmessages ref={messagesScrollEndRef}  isOpenSliderChoosenFiles ={isOpenSliderChoosenFiles}>
         {messages.map((message, index) => {
           return <Message key={index} message={message} order={index} />;
