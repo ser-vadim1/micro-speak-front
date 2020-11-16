@@ -1,14 +1,14 @@
 import React  from "react";
- import {AudioTag, SourceTag, Holder,Preloader, Div, Boxofaudio} from "./styledAudioUpload"
- 
- const Audiouploaded = ({link, isLoadFile}) => {
+import "./style.css"
+import {IMG,BoxOfImg,Holder,Preloader, Div} from "./styledUploadedImg"
 
-   return (<>
-   <Boxofaudio>
-   <AudioTag controls isLoadFile={isLoadFile}>
-     <SourceTag  src={link} type="audio/mpeg"/>
-   </AudioTag>
-   <Holder>
+const ImgUploaded = ({link, isLoadFile}) =>{
+
+   return (
+      <>
+      <BoxOfImg>
+         <IMG  src={link} isLoadFile={isLoadFile}></IMG>
+        <Holder>
            <Preloader isLoadFile={isLoadFile}>
                <Div></Div>
                <Div></Div>
@@ -22,9 +22,9 @@ import React  from "react";
                <Div></Div>
            </Preloader>
         </Holder>
-   </Boxofaudio>
-   
-   </>)
- }
+      </BoxOfImg>
+      </>
+   )
+}
 
- export default Audiouploaded
+export default ImgUploaded

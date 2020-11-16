@@ -200,49 +200,51 @@ const rotateCircle10 = keyframes`
   }
 `
 
-export  const  AudioTag = styled.audio`
-outline-style: none;
-width: 150px;
-height: 20px;
-filter:${({isLoadFile}) => isLoadFile ? "" : "blur(8px)"};
--webkit-filter: ${({isLoadFile}) => isLoadFile ? "" : "blur(8px)"};
+
+export const IMG = styled.img`
+width: 100%;
+height: 100%;
+object-fit: cover;
+
+filter: ${({isLoadFile}) => isLoadFile ? "" : "blur(8px)"};
+
+-webkit-filter: ${({isLoadFile})=> isLoadFile ? "" : "blur(8px)"};
 `
-export const Boxofaudio = styled.div`
+export const BoxOfImg = styled.div`
 position: relative;
-border: 1px solid black;
+border: 3px solid black;
 width: 150px;
 height: 100px;
 
 `
-export  const SourceTag = styled.source``
 
 export const Holder = styled.div`
-position: absolute;
+ position: absolute;
   left: 0px;
   top: 0px;
   bottom: 0px;
   right: 0px;
   width: 100%;
   height: 100%;
+  /* z-index: 999; */
   /* background-color: #2D2F48; */
 `
-export const Div = styled.div`
-`
+export const Div = styled.div``
 export const Preloader = styled.div`
-   display: ${({isLoadFile})=> isLoadFile ? "none" : ""};
+display: ${({isLoadFile})=> isLoadFile ? "none" : ""};
    width: 50px;
-   height: 50px;
-   position: absolute;
-   left: 50%;
-   top: 50%;
-   transform: translateX(-50%) translateY(-50%);
-   animation: ${rotatePreloader} 2s infinite ease-in;
+  height: 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  animation: ${rotatePreloader} 2s infinite ease-in;
 
   & ${Div} {
    position: absolute;
-   width: 100%;
-   height: 100%;
-   opacity: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
   }
   & ${Div}::before{
    content: "";
@@ -255,11 +257,10 @@ export const Preloader = styled.div`
   transform: translateX(-50%);
   border-radius: 50%;
   }
-
   & ${Div}:nth-child(1){
-      transform: rotateZ(0deg);
-      animation: ${rotateCircle1} 2s infinite linear;
-      z-index: 9;
+   transform: rotateZ(0deg);
+  animation: ${rotateCircle1} 2s infinite linear;
+  z-index: 9;
   }
   & ${Div}:nth-child(2){
    transform: rotateZ(36deg);

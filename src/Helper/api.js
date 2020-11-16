@@ -1,7 +1,7 @@
-export const DOMAIN_NAME = "https://micro-speak-back.herokuapp.com"
+export const DOMAIN_NAME = "http://localhost:3001"
 // http://localhost:3001//
-// https://micro-speak-back.herokuapp.com
-
+// FRONTEND:   https://micro-speak-firstdeploy.web.app
+// BACKEND:      https://micro-speak-back.herokuapp.com
 export const CREATE_SINGL_CHAT = ` ${DOMAIN_NAME}/api/creatSinglChat`;
 export const SEARCH_GENERAL_USERS = `${DOMAIN_NAME}/api/searchGeneral/users`;
 export const REGISTRATION_USER = `${DOMAIN_NAME}/api/auth/registration`;

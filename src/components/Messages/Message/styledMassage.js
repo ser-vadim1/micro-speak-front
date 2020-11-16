@@ -48,7 +48,9 @@ export const MessageBlue = styled.div`
   margin-top: 30px;
   padding: 10px;
   background-color: #a8ddfd;
-  width: ${(props) => (props.CountFiles ? "500px" : "250px")};
+  width: ${({CountFiles, audioContain, ImageContain}) => (audioContain && !ImageContain ? "300px"  : 
+  (!audioContain && ImageContain  && CountFiles) || (audioContain && ImageContain) ? "500px"
+  : "250px")};
   word-wrap: break-word;
   height: auto;
   text-align: left;
@@ -184,11 +186,11 @@ width: 100%;
 `
 
 export const BoxofContentModal = styled.picture`
-width: 900px;
-height: 800px;
+width: ${({width})=> width ? width + 'px' : ""};
+height: ${({height})=> height ? height + 'px' : ""};
 `
-// ${({height})=> height ? height + 'px' : ""};
-// ${({width})=> width ? width + 'px' : ""};
+
+
 
 export const ContentImgModal = styled.img`
 width: 100%;

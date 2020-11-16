@@ -127,7 +127,16 @@ export const SinglChatLayout = ({ children }) => {
 
 
 useEffect(()=>{
-let  Newsocket = io(`${DOMAIN_NAME}`,  {transports: ['polling']});
+let  Newsocket = io(`${DOMAIN_NAME}`,  {
+  reconnectionDelay: 1000,
+  reconnection:true,
+  reconnectionAttempts: 10,
+  transports: ['websocket'],
+  agent: false,
+  upgrade: false,
+  rejectUnauthorized: false,
+  transports: ['polling']
+});
 setSocket(Newsocket)
   
     if(!isAuth){

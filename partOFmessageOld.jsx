@@ -47,7 +47,6 @@ const imgRef = useRef(null)
       socket.emit("join", { ID_SinglChat, QuestIdUser, OwneruserId });
       setPrevID_Chat((prevId_User)=> [...prevId_User, QuestIdUser ])
       setPrevChat((prevId_Chat)=>[...prevId_Chat, ID_SinglChat])
-
     if(prevId_Chat.length >=1) {
       let shiftedPrevIdUser = prevId_User.shift()
       let shiftedprevIdChat = prevId_Chat.shift()
@@ -59,7 +58,7 @@ const imgRef = useRef(null)
     socket.off('leave')
   }
 
-  }, [ID_SinglChat, OwneruserId]);
+  }, [ID_SinglChat, OwneruserId, isAuth]);
  
   useEffect(() => {
     if(ID_SinglChat){
@@ -72,14 +71,7 @@ const imgRef = useRef(null)
         console.log('historyMassage', historyMassage);
         setMessages(Array.from(new Set([...historyMassage])));
       });
-
-      socket.on("sendNotifyMessage", (data)=>{
-        console.log('data', data);
-      })
     }
-      
-    
-    
     
 
 return () => {
@@ -95,7 +87,7 @@ return () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-  if ( (message && !isOpenSliderChoosenFiles )|| ( fileApiBrowser && isloadingFiles )) {
+  if (message  || ( fileApiBrowser && isloadingFiles )) {
     socket.emit(
       "sendMessage",
       { ID_SinglChat, message, OwneruserId, QuestIdUser, upLoadAnyFiles, fileApiBrowser },
@@ -107,17 +99,11 @@ return () => {
         setIsloadingFiles(false)
       }
     );
-      socket.emit('nitifyMessage', {ID_SinglChat, OwneruserId, message})
-
   }
   };
 
   const FetchUploadAnyFiles = async (upLoadAnyFiles) => {
     let formData = new FormData();
-    if(upLoadAnyFiles.length >6 ){
-      console.log('a lot of files');
-      return
-    }
     for (let i = 0; i < upLoadAnyFiles.length; i++) {
 
       if(!MixRegex.test(upLoadAnyFiles[i].type)){
@@ -137,8 +123,14 @@ return () => {
         body: formData,
       });
 
+           
+
       let data = await res.json();
+      console.log(res.body);
+
+      const {body} = data 
       if(data){
+
       setFileApiBrowser([...data.files])
       setIsloadingFiles(true)
 
@@ -154,10 +146,6 @@ return () => {
     if (e.target.files) {
     let uploadfiles = []
     let files = e.target.files
-    if(files.length > 6){
-      console.log('a lot of files');
-      return
-    }
       setSliderChoosenFiles(true)
       for (let i = 0; i < files.length; i++) {
         let src = URL.createObjectURL(files[i])
@@ -199,9 +187,9 @@ return () => {
               <BoxOfChoosenFiles key={file.id}>
                 {
                   file.type.startsWith("image/") ? 
-                  <ImgUploaded isLoadFile={isloadingFiles} link = {file.src}/> : 
+                  <ImgUploaded link = {file.src}/> : 
                   file.type.startsWith("audio/") ?
-                  <Audiouploaded isLoadFile={isloadingFiles} link = {file.src}/> : ""
+                  <Audiouploaded link = {file.src}/> : ""
                 }
               </BoxOfChoosenFiles>)
           })}

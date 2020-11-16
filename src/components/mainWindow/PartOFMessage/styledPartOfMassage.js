@@ -46,31 +46,22 @@ export const InputFile = styled.input`
 `;
 export const Label = styled.label`
   position: absolute;
-  top:  ${({isOpenSliderChoosenFiles})=> isOpenSliderChoosenFiles ? "-105px" : "-25px;" };
+  top:  ${({isOpenSliderChoosenFiles})=> isOpenSliderChoosenFiles ? "-125px" : "-25px;" };
   transform: translate(-50%, -50%);
   left: 92%;
 `;
 
 export const SliderOfChoosenFiles = styled.div`
 display: ${({isOpenSliderChoosenFiles})=> isOpenSliderChoosenFiles ? "flex" : 'none'};
-border: 4px solid black;
 width: 100%;
-height:${({isOpenSliderChoosenFiles})=> isOpenSliderChoosenFiles ? "80px" : '0px'};
+height:${({isOpenSliderChoosenFiles})=> isOpenSliderChoosenFiles ? "100px" : '0px'};
 
 `
 
 export const BoxOfChoosenFiles = styled.div`
 width: 150px;
-margin-left: 5px;
-
+&:not(:first-child){
+  margin-left: 5px;
+}
 `
-export const ChoosenFiles = styled.img`
-/* margin-left: -30px; */
-border: 1px solid black;
-width: 150px;
-height: 70px;
-object-fit: contain;
-`
-
-
 

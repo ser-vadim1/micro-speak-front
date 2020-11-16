@@ -36,6 +36,7 @@ const Message = ({
     idSender,
     upLoadAnyFiles,
     timeCreateAt,
+    fileApiBrowser,
   },
   order,
 }) => {
@@ -45,9 +46,12 @@ const Message = ({
   const[isOpenModal, setIsOpenModal] = useState(false)
   const [fileForModal, setFileForModal] = useState("")
   const [size, setSize] = useState({width: "", height: ""})
+  const [AudioContain, setOnlyAudioContain] = useState(false)
+  const [ImageContain, setOnlyImageContain] =useState(false)
+  let Regexaudio = /^audio\/.+/
+  let RegexImg = /^image\/.+/
   // ! Сделать регул.вып уневерсальнее (не дублировать)
-  const regexImg = /^image\/.+/
-  const regexAudio = /^audio\/.+/
+ 
 
 //** FUNCTIONAL
 
@@ -61,16 +65,13 @@ const Message = ({
 
   const hendlerOpenModal =  (linkFile, e) =>{
     setIsOpenModal(!isOpenModal)
-    let newLinkFile = linkFile.replace("resized_", "")
-    console.log(newLinkFile);
-    setFileForModal(newLinkFile)
-      // if( e.target.naturalWidth >= 900){
-      //   console.log('xx');
-      //   setSize({width: 900, height: 800})
-      // }else {
-      //   setSize({width: e.target.naturalWidth, height: e.target.naturalWidth})
+    setFileForModal(linkFile)
+      if( e.target.naturalWidth >= 900){
+        setSize({width: 900, height: 800})
+      }else {
+        setSize({width: e.target.naturalWidth, height: e.target.naturalWidth})
 
-      // }
+      }
   }
     
   
@@ -83,14 +84,31 @@ const Message = ({
     [isOpenModal, fileForModal],
   );
 
-const lol = ()=>{
-  console.log('x');
-}
+  useEffect(()=>{
+    let audio = fileApiBrowser.find((file)=> Regexaudio.test(file.type) ? file : "" )
+    let image = fileApiBrowser.find((file)=> RegexImg.test(file.type) ? file : "" )
+     
+    if(audio && !image){
+      setOnlyAudioContain(true)
+      setOnlyImageContain(false)
+    }else if(!audio && image){
+      setOnlyImageContain(true)
+      setOnlyAudioContain(false)
+    }else if(audio && image){
+      setOnlyImageContain(true)
+      setOnlyAudioContain(true)
+    }
+
+    return ()=>{
+      setOnlyAudioContain(false)
+    }
+  },[])
+
   return (
     <>
       {isSentByCurrentUser ? (
         <FlexBoxOfMessages start={1} order={-order}>
-          <MessageBlue CountFiles={upLoadAnyFiles.length >= 4 ? 1 : 0}>
+          <MessageBlue CountFiles = {fileApiBrowser.length >=4 ? 1 : 0} audioContain={AudioContain} ImageContain={ImageContain} >
             <MessageContent>{content}</MessageContent>
             <MessageTimestampLeft>SMS {timeCreateAt}</MessageTimestampLeft>
             <NickNameBlue>{sender}</NickNameBlue>
@@ -100,21 +118,22 @@ const lol = ()=>{
               />
             </WrapperAvatarMessageBlue>
             <BoxOfUploadedFiles>
-              {upLoadAnyFiles
-                ? upLoadAnyFiles.map((file, index) => {
-                  if(regexAudio.test(file.typeFile)){
+              {
+              fileApiBrowser
+                ? fileApiBrowser.map((file) => {
+                  if(file.type.startsWith('audio/')){
                     return (
-                      <AudioTag controls  key = {index}>
-                        <SourceTag src = {`${file.link}`} type="audio/mpeg"/>
+                      <AudioTag controls  key = {file.id}>
+                        <SourceTag src = {file.src} type="audio/mpeg"/>
                     </AudioTag>
                     )
                   }
-                  else if(regexImg.test(file.typeFile)){
+                  else if( file.type.startsWith("image/") ){
                     return (
                         <IMGAnyFileMassageBlue
-                           key={index}
-                          src={`${file.link}`}
-                          onClick={(e)=> hendlerOpenModal(file.link, e)}
+                           key={file.id}
+                          src={file.src}
+                          onClick={(e)=> hendlerOpenModal(file.src, e)}
                       ></IMGAnyFileMassageBlue>
                  
                     );
@@ -127,13 +146,13 @@ const lol = ()=>{
           </MessageBlue>
           <ModalWindow isOpenModal={isOpenModal} onClick ={hendlerCloseModal}>
             <BoxofContentModal width = {size.width} height = {size.height}>
-              <ContentImgModal onLoad ={lol} src = {`${fileForModal}`}></ContentImgModal>
+              <ContentImgModal  src = {`${fileForModal}`}></ContentImgModal>
             </BoxofContentModal>
           </ModalWindow>
         </FlexBoxOfMessages>
       ) : isSentByCurrentUser === false ? (
         <FlexBoxOfMessages order={-order}>
-          <MessageOrange CountFiles={upLoadAnyFiles.length >= 4 ? 1 : 0}>
+          <MessageOrange CountFiles = {fileApiBrowser.length >=4 ? 1 : 0} audioContain={AudioContain} ImageContain={ImageContain} >
             <MessageContent>{content}</MessageContent>
             <MessageTimestampRight>SMS {timeCreateAt}</MessageTimestampRight>
             <NickNameOrange>{sender}</NickNameOrange>
@@ -143,21 +162,21 @@ const lol = ()=>{
               />
             </WrapperAvatarMessageOrange>
             <BoxOfUploadedFiles>
-              {upLoadAnyFiles
-                ? upLoadAnyFiles.map((file, index) => {
-                  if(regexAudio.test(file.typeFile)){
+              {fileApiBrowser
+                ? fileApiBrowser.map((file, index) => {
+                  if(file.type.startsWith('audio/')){
                     return (
-                    <AudioTag controls  key = {index}>
-                      <SourceTag src = {`${file.link}`} type="audio/mpeg"/>
+                    <AudioTag controls  key = {file.id}>
+                      <SourceTag src = {file.src} type="audio/mpeg"/>
                   </AudioTag>
                     )
                   }
-                  else if(regexImg.test(file.typeFile)){
+                  else if( file.type.startsWith("image/") ){
                     return (
                         <IMGAnyFileMassageBlue
-                           key = {index}
-                            src={`${file.link}`}
-                            onClick={(e)=> hendlerOpenModal(file.link, e)}
+                           key = {file.id}
+                            src={file.src}
+                            onClick={(e)=> hendlerOpenModal(file.src, e)}
                       ></IMGAnyFileMassageBlue>
                  
                     );
