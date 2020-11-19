@@ -6,11 +6,14 @@ import AnotherUsers from "../sideBar/Users/AnotherUsers/anotherUsers"
 
 const ResultSearched = () => {
      //** MAIN VARIABLES
-const {SearchGeneralUsers} = useContext(SinglChatContext)
+
+      const {SearchGeneralUsers} = useContext(SinglChatContext)
+
       //** FUNCTIONAL
       const checkIsGeneralAddedOnline = (GenerUSersOnline, IdUser)=>{
          let findeOne = GenerUSersOnline.find((user)=> user.OwneruserId == IdUser)
          if(findeOne) return true
+
          return false
        }
       //** RENDER
@@ -23,7 +26,7 @@ const {SearchGeneralUsers} = useContext(SinglChatContext)
               key={user._id}
               nick={user.nick}
               avatarFile={user.avatar}
-              questIdUser={user._id}
+              QuestIdUser={user._id}
               isAllowHandler={1}
               ISOnlineUsers= {checkIsGeneralAddedOnline(SearchGeneralUsers.GenerUSersOnline, user._id)  
                ? ' #25cc49': '#ff0000'}

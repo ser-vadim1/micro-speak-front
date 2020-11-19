@@ -212,3 +212,25 @@ return () => {
   );
 };
 export default PartOfMessage;
+
+
+
+  // useEffect(() => {
+
+  //   if (ID_SinglChat) {
+  //     socket.emit("join", { ID_SinglChat, QuestIdUser, OwneruserId });
+  //     setPrevID_Chat((prevId_User)=> [...prevId_User, QuestIdUser ])
+  //     setPrevChat((prevId_Chat)=>[...prevId_Chat, ID_SinglChat])
+
+  //   if(prevId_Chat.length >=1) {
+  //     let shiftedPrevIdUser = prevId_User.shift()
+  //     let shiftedprevIdChat = prevId_Chat.shift()
+  //     socket.emit('leave', {shiftedPrevIdUser, shiftedprevIdChat})
+  //     }
+  //   }
+  //   return () => {
+  //   socket.off('join') 
+  //   socket.off('leave')
+  // }
+
+  // }, [ID_SinglChat, OwneruserId]);

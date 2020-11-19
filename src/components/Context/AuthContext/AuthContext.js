@@ -136,7 +136,6 @@ export const AuthLayout = ({ children }) => {
     }
     if (token) {
       fetchUserData();
-      console.log(token);
       
     }
     return () => {

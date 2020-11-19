@@ -7,7 +7,7 @@ import Search from "../../UI/Search/Search";
 import ResultSearched from "../GeneralUsers/GeneralUsers"
 import {reducerToolbarsIcons} from "../../Reducer/Reducer"
 
-const SideBar = () => {
+const SideBar = ({socket}) => {
   const [state, dispatch] = useReducer(reducerToolbarsIcons, { 
     IsOpenAddedChat: true, 
     isOpenCallIcon: false, 
@@ -16,14 +16,15 @@ const SideBar = () => {
   });
 
 
+
   return (
     <>
       <WrapperSidebar>
         <MainUser />
         <Search ControllerToolBars={state} />
-        {state.IsOpenAddedChat ? <AddedChats/> : 
+        {state.IsOpenAddedChat ? <AddedChats socket={socket} /> : 
         state.isOpenContactsIcon ? <ResultSearched/> : ""}
-        <SideBarTools handlerisAddedChats={dispatch} ControllerToolBars={state} />
+        <SideBarTools handlerisAddedChats={dispatch} ControllerToolBars={state} socket={socket}  />
       </WrapperSidebar>
     </>
   );

@@ -12,7 +12,7 @@ import AnotherUsers from "../../sideBar/Users/AnotherUsers/anotherUsers";
 import { useContext } from "react";
 import { SinglChatContext } from "../../Context/SinglChatContext/SinglChatContext";
 
-const VideoAndChatParts = () => {
+const VideoAndChatParts = ({socket}) => {
   const { AvatarAnotherUser, nickAnotherUser, markOnline} = useContext(SinglChatContext);
  
   return (
@@ -39,7 +39,7 @@ const VideoAndChatParts = () => {
           <PartOfIcons  />
         </BoxOfHeader>
       </ContainerComunication>
-      <PartOfMessage />
+      <PartOfMessage  socket={socket}/>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { Profiler, useState } from "react";
+import React, { useState } from "react";
 import { useContext, useEffect } from "react";
 import { SinglChatContext } from "../../../Context/SinglChatContext/SinglChatContext";
 import {DOMAIN_NAME} from "../../../../Helper/api"
@@ -10,25 +10,38 @@ import {
   DotsIcon,
   ContainerAdditionalPart,
 } from "./styledAnotherUsers";
-
+import { AuthContext } from "../../../Context/AuthContext/AuthContext";
 const AnotherUsers = ({
   nick,
   avatarFile,
-  questIdUser,
+  QuestIdUser,
   addOptions,
   widthAvatar,
   ISOnlineUsers,
-  isAllowHandler
+  isAllowHandler,
+  socket,
 }) => {
   //** MAIN VARIABLES
   const {Create_Singl_Chat} = useContext(SinglChatContext);
+  const {OwneruserId} = useContext(AuthContext)
 
-  //** FUNCTIONA
-
-
-  const handlerSinglChat = (isAllowHandler) => {
+  //** FUNCTIONAL
+  const handlerSinglChat = async (isAllowHandler) => {
     if(isAllowHandler) {
-      Create_Singl_Chat(questIdUser, avatarFile, nick, ISOnlineUsers);
+    let {ID_SinglChat, PrevUserAndChat :{prevUSer, prevChat}} =  await Create_Singl_Chat(QuestIdUser, avatarFile, nick, ISOnlineUsers);
+
+    if(ID_SinglChat && socket.connected){
+      socket.emit("join", { ID_SinglChat, QuestIdUser, OwneruserId } );
+
+      if(ID_SinglChat !== prevChat && prevChat){
+        socket.emit('leave', {prevUSer, prevChat})
+      }
+    
+    }else if(!socket.connected){
+      console.log(socket);
+      console.log('no have connetction with socket');
+    }
+
     } 
   };
 

@@ -5,6 +5,7 @@ import { CREATE_SINGL_CHAT, SEARCH_GENERAL_USERS, DOMAIN_NAME, SEARCH_ADDED_USER
 import { useEffect } from "react";
 import io from "socket.io-client";
 export const SinglChatContext = React.createContext();
+
 export const SinglChatLayout = ({ children }) => {
 
   //** MAIN VARIABLES
@@ -20,13 +21,17 @@ export const SinglChatLayout = ({ children }) => {
   const [nickAnotherUser, setNickAnotherUser] = useState("");
   const [markOnline, setMarkOnline] = useState("")
   const [socket, setSocket] = useState("")
+  const [prevUserAndChat, SetprevUserAndChat] = useState({
+    prevUSer: "",
+    prevChat: ""
+  })
 
   //** FUNCTIONAL
 
-  const Create_Singl_Chat = async (questIdUser, avatarFile, nick, ISOnlineUsers) => {
+  const Create_Singl_Chat = async (QuestIdUser, avatarFile, nick, ISOnlineUsers) => {
     try {
       let res = await fetch(
-        `${CREATE_SINGL_CHAT}?OwnerUserId=${OwneruserId}&questIdUser=${questIdUser}`,
+        `${CREATE_SINGL_CHAT}?OwnerUserId=${OwneruserId}&questIdUser=${QuestIdUser}`,
         {
           headers: {
             Authorization: `${token}`,
@@ -35,16 +40,29 @@ export const SinglChatLayout = ({ children }) => {
         }
       );
 
+      
+
       let data = await res.json();
       if (data) {
         
         setIdSinglChat(data.ID_SinglChat);
+
+ // !!!!! УБРАТЬ ЭТИ НАГРОЖДЕНИЯ !!!!!!!!!!!!!!!!1
+ if(data.ID_SinglChat !== prevUserAndChat.prevChat){
+  SetprevUserAndChat({prevUSer: QuestIdUser, prevChat: data.ID_SinglChat})
+ }
         setAvatarFile(avatarFile);
         setNickAnotherUser(nick);
-        setQueastIdUser(questIdUser);
+        setQueastIdUser(QuestIdUser);
         setMarkOnline(ISOnlineUsers)
-
+// !!!!!!!!!!   !!!!!!!!!!!!!!    !!!!!!!!!!!!!!!!!!!
+        return {
+          ID_SinglChat: data.ID_SinglChat,
+          PrevUserAndChat: prevUserAndChat,
+        }
       }
+
+      
     } catch (error) {
       console.log("Error at func create singl chat", error);
     }
@@ -126,29 +144,34 @@ export const SinglChatLayout = ({ children }) => {
   }
 
 
-useEffect(()=>{
-let  Newsocket = io(`${DOMAIN_NAME}`,  {
-  reconnectionDelay: 1000,
-  reconnection:true,
-  reconnectionAttempts: 10,
-  transports: ['websocket'],
-  agent: false,
-  upgrade: false,
-  rejectUnauthorized: false,
-  transports: ['polling']
-});
-setSocket(Newsocket)
-  
-    if(!isAuth){
-      // ** This part is respond for remove event socket "historyMEssage" and remove component " anotherUser" at partOfHeader
-      setIdSinglChat("")
-      setAvatarFile("")
-      // ! Возможно стоит расмотреть отсоеденение сокета на стороне сервера через прослушку
-    }
+// useEffect(()=>{
+// let  Newsocket = io(`${DOMAIN_NAME}`,  {
+//   path: "/chat",
+//   reconnectionDelay: 1000,
+//   reconnection:true,
+//   reconnectionAttempts: 10,
+//   transports: ['websocket'],
+//   agent: false,
+//   upgrade: false,
+//   rejectUnauthorized: false,
+// });
+// setSocket(Newsocket)
 
-// return () => Newsocket.close()
   
-},[DOMAIN_NAME, isAuth, token, OwneruserId])
+//     if(!isAuth){
+//       // ** This part is respond for remove event socket "historyMEssage" and remove component " anotherUser" at partOfHeader
+//       setIdSinglChat("")
+//       setAvatarFile("")
+//       // ! Возможно стоит расмотреть отсоеденение сокета на стороне сервера через прослушку
+//     }
+
+// return () => {
+//   Newsocket.close()
+//   setSocket("")
+
+// }
+  
+// },[DOMAIN_NAME, isAuth, token, OwneruserId])
   //** RENDER
 
   return (
@@ -159,7 +182,7 @@ setSocket(Newsocket)
         ID_SinglChat,
         nickAnotherUser,
         QuestIdUser,
-        socket,
+        // socket,
         SearchusersAdded,
         SearchGeneralUsers,
         markOnline,

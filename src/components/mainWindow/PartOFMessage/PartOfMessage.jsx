@@ -19,76 +19,54 @@ import Messages from "../../Messages/Message/messages/messages";
 import Audiouploaded from "../../AudioUpload/AudioUpload"
 import ImgUploaded from "../../ImgUploaded/imgUploaded"
 
-const PartOfMessage = () => {
+const PartOfMessage = ({socket}) => {
   //** MAIN VARIABLES
-const imgRef = useRef(null)
 
-  const { ID_SinglChat, QuestIdUser, socket } = useContext(
+  const { ID_SinglChat, QuestIdUser } = useContext(
     SinglChatContext
   );
-  const { OwneruserId, token, isAuth } = useContext(AuthContext);
+  const { OwneruserId, token } = useContext(AuthContext);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [isSendMessage, setIsSendMesssage] = useState(false)
   const [upLoadAnyFiles, SetUpLoadAnyFiles] = useState([]);
   const [fileApiBrowser, setFileApiBrowser] = useState([])
-  const [files, setFiles] = useState([])
-  const [idMEssageDB, setIdMesssageDb] = useState("")
   const [isloadingFiles,setIsloadingFiles] = useState(false)
   const [isOpenSliderChoosenFiles, setSliderChoosenFiles] = useState(false)
-  const [prevId_User, setPrevID_Chat] = useState([])
-  const [prevId_Chat, setPrevChat] = useState([])
   const MixRegex = /^image\/.+|^audio\/.+/ 
 
   //** FUNCTIONAL
-  useEffect(() => {
-
-    if (ID_SinglChat) {
-      socket.emit("join", { ID_SinglChat, QuestIdUser, OwneruserId });
-      setPrevID_Chat((prevId_User)=> [...prevId_User, QuestIdUser ])
-      setPrevChat((prevId_Chat)=>[...prevId_Chat, ID_SinglChat])
-
-    if(prevId_Chat.length >=1) {
-      let shiftedPrevIdUser = prevId_User.shift()
-      let shiftedprevIdChat = prevId_Chat.shift()
-      socket.emit('leave', {shiftedPrevIdUser, shiftedprevIdChat})
-      }
-    }
-    return () => {
-    socket.off('join') 
-    socket.off('leave')
-  }
-
-  }, [ID_SinglChat, OwneruserId]);
+// useEffect(()=>{
+//   if(socket){
+//     socket.emit('nitifyMessage', { OwneruserId, QuestIdUser, message})
+//   }
+// },[socket, OwneruserId, QuestIdUser])
  
   useEffect(() => {
-    if(ID_SinglChat){
+    if(socket){
       socket.on("message", (message) => {
-        setIdMesssageDb(message.id)
-        console.log(message);
         setMessages((messages) => [...messages, message]);
+        
       });
+
+      // socket.on("sendNotification", (data)=>{
+      //   console.log("data at notifyMessage",data);
+      // })
+
       socket.on("historyMassages", (historyMassage) => {
-        console.log('historyMassage', historyMassage);
         setMessages(Array.from(new Set([...historyMassage])));
       });
-
-      socket.on("sendNotifyMessage", (data)=>{
-        console.log('data', data);
-      })
     }
+   
       
-    
-    
-    
 
+    
 return () => {
-  socket.off('message')
-  socket.off('historyMassages')
+  // socket.off('message')
+  // socket.off('historyMassages')
 }
 // ! Сделать Willmount|
   
-  }, [ID_SinglChat]);
+  }, [socket]);
 
 
 
@@ -98,18 +76,17 @@ return () => {
   if ( (message && !isOpenSliderChoosenFiles )|| ( fileApiBrowser && isloadingFiles )) {
     socket.emit(
       "sendMessage",
-      { ID_SinglChat, message, OwneruserId, QuestIdUser, upLoadAnyFiles, fileApiBrowser },
+      { ID_SinglChat, message, OwneruserId, QuestIdUser, fileApiBrowser },
       () => {
         setMessage("");
         setFileApiBrowser([])
         setSliderChoosenFiles(false)
-        setIsSendMesssage(true)
         setIsloadingFiles(false)
       }
     );
-      socket.emit('nitifyMessage', {ID_SinglChat, OwneruserId, message})
-
+ 
   }
+
   };
 
   const FetchUploadAnyFiles = async (upLoadAnyFiles) => {
@@ -224,3 +201,17 @@ return () => {
   );
 };
 export default PartOfMessage;
+
+// useEffect(()=>{
+//   if(socket){
+//     socket.emit('nitifyMessage', { OwneruserId, QuestIdUser})
+
+//     console.log('sss');
+
+//     socket.on("sendNotifyMessage", (data)=>{
+//       console.log('data', data);
+//     })
+//   }
+
+
+// },[OwneruserId, QuestIdUser, socket])

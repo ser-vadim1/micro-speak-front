@@ -2,7 +2,7 @@ import React, {useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext/AuthContext";
 import AnotherUsers from "../sideBar/Users/AnotherUsers/anotherUsers";
-import {SEARCH_ADDED_USERES_ONLINE, GET_ADDED_CHAT} from "../../Helper/api"
+import {DOMAIN_NAME, SEARCH_ADDED_USERES_ONLINE, GET_ADDED_CHAT} from "../../Helper/api"
 import { SinglChatContext } from "../Context/SinglChatContext/SinglChatContext";
 
 // ? I am trying make another connection of socket by nymesapce
@@ -15,7 +15,7 @@ const AddedChats = ({socket}) => {
   const [addedChats, setAddedChats] = useState([]);
   const [onlineAddedUsers, setOnlineAddedUsers] = useState([])
   const [historyUsersOnline, setHistoryUsersOnline] = useState([])
-const [isMounted, setIsmounted] = useState(true)
+
   const fetchAddedUsersOnline = useCallback( async ()=>{
   try {
     let res = await fetch(`${SEARCH_ADDED_USERES_ONLINE}`, {
@@ -77,15 +77,44 @@ const GetAddedChat = useCallback(async (signal) =>{
   }, [OwneruserId, SearchusersAdded]);
 
 
+// useEffect(()=>{
+  
+//   let  isMounted = true
+//   let _socket;
+//   if(isMounted){
+//      _socket = io(`${DOMAIN_NAME}`,{
+//       path: "/chat",
+//       reconnectionDelay: 1000,
+//       reconnection:true,
+//       reconnectionAttempts: 10,
+//       transports: ['websocket'],
+//       agent: false,
+//       upgrade: false,
+//       rejectUnauthorized: false,
+//     })
 
+
+    
+//     _socket.on('changeStream', data => {
+//       console.log(data);
+//       fetchAddedUsersOnline()
+//     })
+//   }
+
+
+//   return ()=>{
+//     _socket.close()
+//     isMounted=false
+//   } 
+// },[])
 
 useEffect(()=>{
   if(socket){
-    // ! дублируется запроссы ИСПРАВИТЬ
-      socket.on("changeStream", data =>{
-        console.log(data);
-        fetchAddedUsersOnline()
-      })
+    socket.on("changeStream", data =>{
+      console.log(data);
+      fetchAddedUsersOnline()
+    })
+  console.log('socket at added Chat', socket.connected);
   }
 
 
@@ -134,11 +163,9 @@ const checkIsUserAddedOnline = (idQuest, _OwneruserId, OwneruserId) =>{
                 : addedChat.idQuest
             }
             isAllowHandler={1}
-
             ISOnlineUsers = {checkIsUserAddedOnline(addedChat.idQuest, addedChat.idAdmin, OwneruserId) 
               ? ' #25cc49' : '#ff0000'}
-
-            socket={socket}
+              socket={socket}
           />
         );
       })}

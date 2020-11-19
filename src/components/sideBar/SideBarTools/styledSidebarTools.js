@@ -70,8 +70,36 @@ export const ContactsIcon = styled(PermContactCalendarOutlinedIcon)`
     cursor: pointer;
   }
 `;
+
+export const  BoxOfNotifiIcon = styled.div`
+  position: relative;
+  `
+
+export const CounterOdNotifi = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border: 1px solid white;
+  top: -5px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  left: -6px;
+  background-color: #f74343;  
+  `
+
+export const ContentOfNotifi = styled.p`
+`
+
+
 export const NotificationIcon = styled(NotificationsOutlinedIcon)`
   color: ${({ isactive }) => (isactive ? "white" : "")};
+
+
   &:hover {
     color: white;
     cursor: pointer;
