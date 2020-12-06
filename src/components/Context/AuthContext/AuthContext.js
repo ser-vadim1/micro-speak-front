@@ -6,6 +6,7 @@ import {
   PROFILE_SECRET_TOKEN,
   FORGET_PASS,
   RESET_PASS,
+  DOMAIN_NAME,
 } from "../../../Helper/api";
 
 export const AuthContext = React.createContext();
@@ -23,6 +24,29 @@ export const AuthLayout = ({ children }) => {
   const [userName, setUserName] = useState("");
   const [doneMassage, setDoneMessage] = useState("");
   const [conFirmedEmail, setConfirmedEmail] = useState(false);
+
+// const registerWithGoogle = async () => {
+//   try {
+//     let res = await fetch(`${DOMAIN_NAME}/api/auth/google`, {
+//       headers: {
+//         "Access-Control-Allow-Credentials": "*",
+//         credentials: false,
+//       },
+//       method: 'GET'
+//     })
+
+//     let data = await res.json()
+
+//     console.log(data);
+//   } catch (error) {
+    
+//   }
+// }
+
+
+const registerWithGoogle = async () => {
+  window.open(`${DOMAIN_NAME}/api/auth/facebook`, "_self");
+}
 
   const register = async (body) => {
     try {
@@ -217,6 +241,7 @@ export const AuthLayout = ({ children }) => {
         ResetPassword,
         confirmationEmail,
         setConfirmedEmail,
+        registerWithGoogle,
       }}
     >
       {children}

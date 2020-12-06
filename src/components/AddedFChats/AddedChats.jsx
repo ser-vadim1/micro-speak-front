@@ -2,7 +2,7 @@ import React, {useEffect, useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../Context/AuthContext/AuthContext";
 import AnotherUsers from "../sideBar/Users/AnotherUsers/anotherUsers";
-import {SEARCH_ADDED_USERES_ONLINE, GET_ADDED_CHAT} from "../../Helper/api"
+import {SEARCH_ADDED_USERES_ONLINE, GET_ADDED_CHAT, DOMAIN_NAME} from "../../Helper/api"
 import { SinglChatContext } from "../Context/SinglChatContext/SinglChatContext";
 
 // ? I am trying make another connection of socket by nymesapce
@@ -11,20 +11,22 @@ import { useCallback } from "react";
 
 const AddedChats = ({socket}) => {
   const { OwneruserId, token } = useContext(AuthContext);
-  const {SearchusersAdded, isSearching, AddedUsersOnline} = useContext(SinglChatContext)
+  const {SearchusersAdded, isSearching, AddedUsersOnline, SetisOnlineForNotifi} = useContext(SinglChatContext)
   const [addedChats, setAddedChats] = useState([]);
   const [onlineAddedUsers, setOnlineAddedUsers] = useState([])
   const [historyUsersOnline, setHistoryUsersOnline] = useState([])
-const [isMounted, setIsmounted] = useState(true)
-  const fetchAddedUsersOnline = useCallback( async ()=>{
+  
+  const fetchAddedUsersOnline = useCallback( async (signal)=>{
   try {
     let res = await fetch(`${SEARCH_ADDED_USERES_ONLINE}`, {
       method: "GET",
+      signal: signal,
     })
 
     let data = await res.json()
     setHistoryUsersOnline(data.message)
     setOnlineAddedUsers(data.message)
+    SetisOnlineForNotifi(data.message)
   } catch (error) {
     console.log('fetchUsersOnline', error);
   }
@@ -32,13 +34,12 @@ const [isMounted, setIsmounted] = useState(true)
 
 
 
-const GetAddedChat = useCallback(async (signal) =>{
+const GetAddedChat = useCallback(async () =>{
   try {
     let res = await fetch(
       `${GET_ADDED_CHAT}${OwneruserId}`,
       {
         method: "GET",
-        signal: signal,
         headers: {
           Authorization: `${token}`,
           "Content-Type": "application/json",
@@ -64,7 +65,7 @@ const GetAddedChat = useCallback(async (signal) =>{
         setOnlineAddedUsers([...AddedUsersOnline])
       }else if(!isSearching){
         setOnlineAddedUsers([...historyUsersOnline])
-        GetAddedChat(signal);
+        GetAddedChat();
       }
     }
 
@@ -76,20 +77,51 @@ const GetAddedChat = useCallback(async (signal) =>{
     }
   }, [OwneruserId, SearchusersAdded]);
 
-
-
-
 useEffect(()=>{
-  if(socket){
-    // ! дублируется запроссы ИСПРАВИТЬ
-      socket.on("changeStream", data =>{
-        console.log(data);
-        fetchAddedUsersOnline()
-      })
+  fetchAddedUsersOnline()
+  let  isMounted = true
+  let _socket;
+  if(isMounted){
+     _socket = io(`${DOMAIN_NAME}`,{
+      path: "/chat",
+      reconnectionDelay: 1000,
+      reconnection:true,
+      reconnectionAttempts: 10,
+      transports: ['websocket'],
+      agent: false,
+      upgrade: false,
+      rejectUnauthorized: false,
+    })
+    _socket.on('changeStream', data => {
+      console.log(data);
+      fetchAddedUsersOnline()
+    })
   }
+  return ()=>{
+    _socket.close()
+    isMounted=false
+  } 
+},[])
 
 
-},[socket])
+// useEffect(()=>{
+//   const abortControler = new AbortController()
+//   const signal = abortControler.signal
+//   fetchAddedUsersOnline(signal)
+//   if(socket){
+//     // ! дублируется запроссы ИСПРАВИТЬ
+//       socket.on("changeStream", data =>{
+//         console.log(data);
+//         fetchAddedUsersOnline(signal)
+//       })
+      
+//       return (socket)=>{
+//         abortControler.abort()
+//       } 
+//   }
+
+
+// },[socket])
 
 // ! Отвратительна,я функия ПЕРЕДЕЛАТЬ!!!!!!!
 

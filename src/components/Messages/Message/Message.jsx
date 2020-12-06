@@ -61,7 +61,11 @@ const Message = ({
     } else {
       setisSentByCurrentUser(false);
     }
-  }, []);
+
+    return ()=>{
+      setisSentByCurrentUser("")
+    }
+  }, [OwneruserId, idSender]);
 
   const hendlerOpenModal =  (linkFile, e) =>{
     setIsOpenModal(!isOpenModal)

@@ -32,25 +32,19 @@ const PartOfMessage = ({socket}) => {
   const [fileApiBrowser, setFileApiBrowser] = useState([])
   const [isloadingFiles,setIsloadingFiles] = useState(false)
   const [isOpenSliderChoosenFiles, setSliderChoosenFiles] = useState(false)
+  const[sentMessage, setSentMessage] = useState(false)
   const MixRegex = /^image\/.+|^audio\/.+/ 
 
   //** FUNCTIONAL
-// useEffect(()=>{
-//   if(socket){
-//     socket.emit('nitifyMessage', { OwneruserId, QuestIdUser, message})
-//   }
-// },[socket, OwneruserId, QuestIdUser])
+
  
   useEffect(() => {
     if(socket){
       socket.on("message", (message) => {
         setMessages((messages) => [...messages, message]);
+        setSentMessage(true);
         
       });
-
-      // socket.on("sendNotification", (data)=>{
-      //   console.log("data at notifyMessage",data);
-      // })
 
       socket.on("historyMassages", (historyMassage) => {
         setMessages(Array.from(new Set([...historyMassage])));
@@ -82,6 +76,7 @@ return () => {
         setFileApiBrowser([])
         setSliderChoosenFiles(false)
         setIsloadingFiles(false)
+        setSentMessage(false)
       }
     );
  
@@ -118,7 +113,6 @@ return () => {
       if(data){
       setFileApiBrowser([...data.files])
       setIsloadingFiles(true)
-
       }
       console.log('its DATA',data);
     } catch (error) {
@@ -159,7 +153,13 @@ return () => {
 
       <ContainerMessage >
         <BoxOfTypeMessage>
-          <Messages messages={messages} ID_SinglChat ={ID_SinglChat} isOpenSliderChoosenFiles = {isOpenSliderChoosenFiles}/>
+          <Messages 
+          messages={messages} 
+          ID_SinglChat ={ID_SinglChat}
+          isOpenSliderChoosenFiles = {isOpenSliderChoosenFiles}
+          setMessages = {setMessages}
+          isSentMessage={sentMessage}
+          />
           <FormTypeMessage>
             <TypeMessage
               placeholder="Type your message"

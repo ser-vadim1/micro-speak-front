@@ -1,9 +1,6 @@
 import React, { useState, useContext } from "react";
-import {useLocation} from "react-router-dom"
 import { AuthContext } from "../AuthContext/AuthContext";
 import { CREATE_SINGL_CHAT, SEARCH_GENERAL_USERS, DOMAIN_NAME, SEARCH_ADDED_USERES_ONLINE } from "../../../Helper/api";
-import { useEffect } from "react";
-import io from "socket.io-client";
 export const SinglChatContext = React.createContext();
 
 export const SinglChatLayout = ({ children }) => {
@@ -20,7 +17,7 @@ export const SinglChatLayout = ({ children }) => {
   const [AvatarAnotherUser, setAvatarFile] = useState("");
   const [nickAnotherUser, setNickAnotherUser] = useState("");
   const [markOnline, setMarkOnline] = useState("")
-  const [socket, setSocket] = useState("")
+  const [isOnlineForNotifi, SetisOnlineForNotifi] = useState([])
   const [prevUserAndChat, SetprevUserAndChat] = useState({
     prevUSer: "",
     prevChat: ""
@@ -144,34 +141,7 @@ export const SinglChatLayout = ({ children }) => {
   }
 
 
-// useEffect(()=>{
-// let  Newsocket = io(`${DOMAIN_NAME}`,  {
-//   path: "/chat",
-//   reconnectionDelay: 1000,
-//   reconnection:true,
-//   reconnectionAttempts: 10,
-//   transports: ['websocket'],
-//   agent: false,
-//   upgrade: false,
-//   rejectUnauthorized: false,
-// });
-// setSocket(Newsocket)
 
-  
-//     if(!isAuth){
-//       // ** This part is respond for remove event socket "historyMEssage" and remove component " anotherUser" at partOfHeader
-//       setIdSinglChat("")
-//       setAvatarFile("")
-//       // ! Возможно стоит расмотреть отсоеденение сокета на стороне сервера через прослушку
-//     }
-
-// return () => {
-//   Newsocket.close()
-//   setSocket("")
-
-// }
-  
-// },[DOMAIN_NAME, isAuth, token, OwneruserId])
   //** RENDER
 
   return (
@@ -182,7 +152,7 @@ export const SinglChatLayout = ({ children }) => {
         ID_SinglChat,
         nickAnotherUser,
         QuestIdUser,
-        // socket,
+        isOnlineForNotifi,
         SearchusersAdded,
         SearchGeneralUsers,
         markOnline,
@@ -196,6 +166,7 @@ export const SinglChatLayout = ({ children }) => {
         fetchSearchAddedUsers,
         clearFunc,
         setMarkOnline,
+        SetisOnlineForNotifi,
       }}
     >
       {children}

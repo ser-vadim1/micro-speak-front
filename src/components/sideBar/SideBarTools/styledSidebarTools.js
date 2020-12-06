@@ -77,22 +77,26 @@ export const  BoxOfNotifiIcon = styled.div`
 
 export const CounterOdNotifi = styled.div`
   position: absolute;
-  display: flex;
+  display: ${({isNotifi})=> isNotifi ? "flex" : "none"};
   justify-content: center;
   align-items: center;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: white;
+  font-family: 'Sura', serif;
+  letter-spacing: 2px;
   width: 35px;
   height: 35px;
-  border: 1px solid white;
+  border: 2px solid white;
   top: -5px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   left: -6px;
-  background-color: #f74343;  
+  background-color:#ff1100;  
   `
 
 export const ContentOfNotifi = styled.p`
+margin-left: 3px;
+font-size: 14px;
 `
 
 

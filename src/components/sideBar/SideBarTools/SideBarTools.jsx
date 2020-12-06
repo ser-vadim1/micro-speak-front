@@ -18,28 +18,31 @@ import {
   ContentOfNotifi,
 } from "./styledSidebarTools";
 
-const SideBarTools = ({ handlerisAddedChats, ControllerToolBars, socket }) => {
+const SideBarTools = ({ handlerisAddedChats, ControllerToolBars, socket, isWhoNotifi }) => {
   //** MAIN VARIABLES
+const { NotifiCount} = ControllerToolBars
 const {OwneruserId} = useContext(AuthContext)
-const {QuestIdUser} = useContext(SinglChatContext)
-const [countNotification, setCountNotification] = useState(0)
+// const [isWhoNotifi, setIsWhoNotifi] = useState([])
   //** FUNCTIONAL
   useEffect(()=>{
     if(socket){
 //** Render is going only one time
       socket.emit('notification', { OwneruserId})
-      
-   
     }
   },[socket, OwneruserId])
 
-  useEffect(()=>{
-    if(socket){
-      socket.on("sendNotification", (data)=>{
-        console.log("data at notifyMessage",data);
-      })
-    }
-  },[socket])
+  // useEffect(()=>{
+  //   if(socket){
+  //     socket.on("sendNotification", (notifiObj)=>{
+  //       adjustState(notifiObj)
+  //         handlerisAddedChats({type: "plusNotifi"})
+  //         console.log('toolssssss');
+
+  //         console.log("data at notifyMessage",notifiObj);
+  //     })
+  //   }
+  // },[socket])
+
 
 
   const _IconChat = () => {
@@ -78,9 +81,10 @@ const [countNotification, setCountNotification] = useState(0)
             onClick={_ContactsIcon}
             isactive={ControllerToolBars.isOpenContactsIcon ? 1 : 0}
           />
+          
           <BoxOfNotifiIcon>
-            <CounterOdNotifi>
-              <ContentOfNotifi>10+</ContentOfNotifi>
+            <CounterOdNotifi isNotifi={isWhoNotifi.length > 0 ? "flex" : ""} >
+              <ContentOfNotifi  >{isWhoNotifi.length}</ContentOfNotifi>
             </CounterOdNotifi>
           <NotificationIcon
             onClick={_NotifIcon}

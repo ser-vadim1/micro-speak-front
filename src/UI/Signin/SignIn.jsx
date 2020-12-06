@@ -24,7 +24,6 @@ const SignIn = () => {
   const [DisableButton, setDisabled] = useState(true);
   const { EmailToken } = useParams();
   const {
-    conFirmedEmail,
     isloading,
     isAuth,
     SignIn,
@@ -32,6 +31,7 @@ const SignIn = () => {
     clearError,
     confirmationEmail,
     errorExpiredToken,
+    registerWithGoogle,
   } = useContext(AuthContext);
   let token = JSON.parse(localStorage.getItem("user_Token"));
 

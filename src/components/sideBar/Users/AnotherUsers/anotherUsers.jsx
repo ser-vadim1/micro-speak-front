@@ -32,7 +32,7 @@ const AnotherUsers = ({
 
     if(ID_SinglChat && socket.connected){
       socket.emit("join", { ID_SinglChat, QuestIdUser, OwneruserId } );
-
+      
       if(ID_SinglChat !== prevChat && prevChat){
         socket.emit('leave', {prevUSer, prevChat})
       }
